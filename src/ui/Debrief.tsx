@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { Debrief } from '../session/log';
 import { isOver, type SessionState } from '../session/session';
 import { gap } from './bits';
+import { Guide } from './toons/Toons';
 
 interface Props {
   state: SessionState;
@@ -21,6 +22,9 @@ export function DebriefForm({ state, canSave, onSave, onSkip }: Props) {
 
   return (
     <section className="outcome" aria-labelledby="debrief-title">
+      <Guide mood="point" size={76}>
+        Half a minute. It makes the next session better.
+      </Guide>
       <div className="stack" style={gap('0.5rem')}>
         <p className="eyebrow">
           {state.scenario.title} · {agreed ? 'agreement' : 'no deal'} ·{' '}

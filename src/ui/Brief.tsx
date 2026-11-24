@@ -3,6 +3,8 @@ import type { Facts, FactSpec, Scenario, ScenarioTemplate } from '../engine/type
 import { categoryLabels, defaultFacts } from '../scenarios';
 import type { Mode } from '../session/session';
 import { gap } from './bits';
+import { Critter } from './toons/Critter';
+import { castFor } from './toons/cast';
 
 export interface StartRequest {
   scenario: Scenario;
@@ -46,6 +48,7 @@ export function Brief({ template, onBack, onStart }: Props) {
   }, [defaults, drafts, template]);
 
   const scenario = useMemo(() => template.build(facts), [template, facts]);
+  const cast = castFor(scenario);
   const customised = template.facts.some((f) => facts[f.id] !== defaults[f.id]);
   const role = scenario.parties.some((p) => p.id === soloRole) ? soloRole : scenario.parties[0].id;
   const groups = [...new Set(template.facts.map((f) => f.group))];
@@ -75,13 +78,16 @@ export function Brief({ template, onBack, onStart }: Props) {
           <section className="stack" style={gap('0.5rem')}>
             <h2>Who’s involved</h2>
             <ul className="people">
-              {scenario.parties.map((party) => (
-                <li key={party.id}>
-                  <span className="who">
-                    <span className="name">{party.name}</span>
-                    <span className="muted small">{party.role}</span>
-                  </span>
-                  <span>{party.publicBrief}</span>
+              {scenario.parties.map((party, index) => (
+                <li key={party.id} className="person">
+                  <Critter species={cast[party.id]} size={52} delay={index * 0.8} />
+                  <div>
+                    <span className="who">
+                      <span className="name">{party.name}</span>
+                      <span className="muted small">{party.role}</span>
+                    </span>
+                    <span>{party.publicBrief}</span>
+                  </div>
                 </li>
               ))}
             </ul>

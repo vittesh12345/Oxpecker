@@ -3,6 +3,8 @@ import { baselineOf, tradeoffs } from '../engine/engine';
 import type { Party } from '../engine/types';
 import type { Proposal, Reply, SessionState, Tightening } from '../session/session';
 import { Figures, Terms, gap } from './bits';
+import { Critter } from './toons/Critter';
+import { castFor } from './toons/cast';
 
 interface Props {
   state: SessionState;
@@ -45,6 +47,7 @@ function reasonsFor(state: SessionState, party: Party, proposal: Proposal): Reas
 export function ReviewStep({ state, party, onSubmit }: Props) {
   const { scenario } = state;
   const today = baselineOf(scenario).outcomes[party.id];
+  const species = castFor(scenario)[party.id];
   const [replies, setReplies] = useState<Record<string, Reply>>({});
   const [picked, setPicked] = useState<Record<string, string[]>>({});
 
@@ -163,6 +166,11 @@ export function ReviewStep({ state, party, onSubmit }: Props) {
               <hr className="tear" />
 
               <div className="replies" role="group" aria-label={`Your answer to proposal ${proposal.letter}`}>
+                <Critter
+                  species={species}
+                  size={42}
+                  mood={reply === 'accept' ? 'happy' : reply === 'decline' ? 'worried' : 'neutral'}
+                />
                 <button
                   type="button"
                   className="reply yes"

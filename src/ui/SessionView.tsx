@@ -5,6 +5,8 @@ import { LimitsStep } from './Limits';
 import { ResultStep } from './Result';
 import { ReviewStep } from './Review';
 import { PrivacyGate, PrivateBanner, Terms, gap, usePrivateBackdrop } from './bits';
+import { Guide } from './toons/Toons';
+import { castFor } from './toons/cast';
 
 interface Props {
   state: SessionState;
@@ -25,6 +27,7 @@ export function SessionView({ state, dispatch, onFinish }: Props) {
   const partyId = currentParty(state);
   const party = partyId ? partyOf(scenario, partyId) : null;
   const solo = state.mode === 'solo';
+  const cast = castFor(scenario);
 
   // A private turn must be opened by the person it belongs to. The key changes
   // with every turn, so the cover screen comes back for the next person.
@@ -48,11 +51,18 @@ export function SessionView({ state, dispatch, onFinish }: Props) {
           ? `${party.name} takes another look at their own limits.`
           : `${party.name} sets private limits on pay and availability.`
         : `${party.name} sees what each proposal would mean for them and answers in private.`;
-    body = <PrivacyGate name={party.name} purpose={purpose} onReveal={() => setOpened(turnKey)} />;
+    body = (
+      <PrivacyGate
+        name={party.name}
+        species={cast[party.id]}
+        purpose={purpose}
+        onReveal={() => setOpened(turnKey)}
+      />
+    );
   } else if (party && state.phase === 'limits') {
     body = (
       <>
-        <PrivateBanner name={party.name} solo={solo} />
+        <PrivateBanner name={party.name} solo={solo} species={cast[party.id]} />
         <LimitsStep
           key={turnKey}
           state={state}
@@ -66,7 +76,7 @@ export function SessionView({ state, dispatch, onFinish }: Props) {
   } else if (party && state.phase === 'review') {
     body = (
       <>
-        <PrivateBanner name={party.name} solo={solo} />
+        <PrivateBanner name={party.name} solo={solo} species={cast[party.id]} />
         <ReviewStep
           key={turnKey}
           state={state}
@@ -82,6 +92,11 @@ export function SessionView({ state, dispatch, onFinish }: Props) {
     const first = partyOf(scenario, state.humans[0]);
     body = (
       <section className="stack" style={gap('1.25rem')} aria-labelledby="proposals-title">
+        <Guide mood="point">
+          {count === 1
+            ? 'Just the one this round. Have a read.'
+            : `${count} ways this could go. Read them together.`}
+        </Guide>
         <div className="stack" style={gap('0.5rem')}>
           <p className="eyebrow">Round {state.round}</p>
           <h2 id="proposals-title">

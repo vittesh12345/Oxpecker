@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { categoryLabels } from '../scenarios';
 import { logStats, toCsv, type LogEntry } from '../session/log';
 import { CopyButton, gap } from './bits';
+import { Guide } from './toons/Toons';
 
 interface Props {
   entries: LogEntry[];
@@ -10,8 +11,8 @@ interface Props {
   onHome: () => void;
 }
 
-/** Set VITE_NO_DOWNLOADS=true when building for a host that blocks file downloads. */
-const canDownload = import.meta.env.VITE_NO_DOWNLOADS !== 'true';
+/** Set VITE_EMBEDDED=true when building for a sandboxed host that blocks file downloads. */
+const canDownload = import.meta.env.VITE_EMBEDDED !== 'true';
 
 const dateTime = new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeStyle: 'short' });
 
@@ -52,6 +53,9 @@ export function LogPage({ entries, justSaved, onClear, onHome }: Props) {
 
       {entries.length === 0 ? (
         <section className="sheet stack">
+          <Guide mood="sleep" size={84}>
+            Nothing here yet. Wake me when a session ends.
+          </Guide>
           <h2>No sessions logged yet</h2>
           <p>
             Finish a session and save the short debrief at the end. It will show up here, ready to

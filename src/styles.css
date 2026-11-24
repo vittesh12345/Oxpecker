@@ -22,6 +22,15 @@
   --lining-ink: #eaeefb;
   --focus: var(--ink);
 
+  /* Character art keeps one palette in both themes. */
+  --toon-line: #1b2238;
+  --toon-white: #ffffff;
+  --toon-brown: #9a7650;
+  --toon-cream: #f4e6c8;
+  --toon-orange: #e2892f;
+  --toon-red: #d5412e;
+  --toon-pink: #f29c9c;
+
   --display: 'IBM Plex Sans Condensed', 'Arial Narrow', 'Helvetica Neue', Arial, sans-serif;
   --body: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --data: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
@@ -904,6 +913,7 @@ body.is-private .progress li[aria-current='step'] {
 
 .replies {
   display: flex;
+  align-items: center;
   gap: 0.6rem;
 }
 

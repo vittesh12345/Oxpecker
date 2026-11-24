@@ -1,6 +1,10 @@
 import { baselineOf, partyOf } from '../engine/engine';
 import { agreedProposal, type Action, type SessionState } from '../session/session';
 import { CopyButton, Figures, Terms, gap, termsText } from './bits';
+import { Bird } from './toons/Bird';
+import { Critter } from './toons/Critter';
+import { Confetti, Guide } from './toons/Toons';
+import { castFor } from './toons/cast';
 
 interface Props {
   state: SessionState;
@@ -26,6 +30,7 @@ export function ResultStep({ state, dispatch, onFinish }: Props) {
   const { scenario, result } = state;
   if (!result) return null;
   const solo = state.mode === 'solo';
+  const cast = castFor(scenario);
   const revise = (label: string) => (
     <button type="button" className="btn" onClick={() => dispatch({ type: 'revise-limits' })}>
       {label}
@@ -43,6 +48,7 @@ export function ResultStep({ state, dispatch, onFinish }: Props) {
       const matches = state.proposals.filter((p) => result.matches.includes(p.key));
       return (
         <section className="stack" aria-labelledby="result-title">
+          <Guide mood="point">Spoiled for choice. Any of these works for everyone.</Guide>
           <div className="stack" style={gap('0.5rem')}>
             <p className="eyebrow">Round {state.round}</p>
             <h2 id="result-title">Everyone said yes to more than one</h2>
@@ -78,10 +84,18 @@ export function ResultStep({ state, dispatch, onFinish }: Props) {
     const player = solo ? partyOf(scenario, state.humans[0]) : null;
     return (
       <section className="outcome" aria-labelledby="result-title">
+        <Confetti />
+        <div className="toon party-row">
+          <Bird mood="cheer" size={92} />
+          {scenario.parties.map((person, index) => (
+            <figure key={person.id}>
+              <Critter species={cast[person.id]} mood="happy" size={60} delay={index * 0.15} />
+              <figcaption>{person.name}</figcaption>
+            </figure>
+          ))}
+        </div>
         <div className="stack" style={gap('0.5rem')}>
-          <p className="eyebrow">
-            Agreed in round {state.round}
-          </p>
+          <p className="eyebrow">Agreed in round {state.round}</p>
           <h2 id="result-title">It’s a deal: Proposal {agreed.letter}</h2>
           <p className="lede">
             {solo
@@ -120,6 +134,7 @@ export function ResultStep({ state, dispatch, onFinish }: Props) {
   if (result.kind === 'ended') {
     return (
       <section className="outcome" aria-labelledby="result-title">
+        <Guide mood="sad">No deal this time. That’s allowed.</Guide>
         <div className="stack" style={gap('0.5rem')}>
           <p className="eyebrow">No agreement</p>
           <h2 id="result-title">Ended without a deal</h2>
@@ -140,6 +155,7 @@ export function ResultStep({ state, dispatch, onFinish }: Props) {
   if (result.kind === 'no-overlap') {
     return (
       <section className="outcome" aria-labelledby="result-title">
+        <Guide mood="think">The limits don’t meet yet. Let’s find the closest miss.</Guide>
         <div className="stack" style={gap('0.5rem')}>
           <p className="eyebrow">No proposals</p>
           <h2 id="result-title">Nothing fits everyone’s limits at once</h2>
@@ -164,6 +180,7 @@ export function ResultStep({ state, dispatch, onFinish }: Props) {
   if (result.kind === 'exhausted') {
     return (
       <section className="outcome" aria-labelledby="result-title">
+        <Guide mood="think">That’s everything that fits. Time for a rethink?</Guide>
         <div className="stack" style={gap('0.5rem')}>
           <p className="eyebrow">Round {state.round}</p>
           <h2 id="result-title">That was every option that fits</h2>
@@ -185,6 +202,7 @@ export function ResultStep({ state, dispatch, onFinish }: Props) {
 
   return (
     <section className="outcome" aria-labelledby="result-title">
+      <Guide mood="think">No match this round. It happens.</Guide>
       <div className="stack" style={gap('0.5rem')}>
         <p className="eyebrow">Round {state.round}</p>
         <h2 id="result-title">No proposal got a yes from everyone</h2>

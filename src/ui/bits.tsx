@@ -2,6 +2,9 @@ import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { describeChoices } from '../engine/engine';
 import { formatDelta, formatValue, monthly } from '../engine/format';
 import type { Choices, MetricSpec, Outcome, Scenario } from '../engine/types';
+import { Critter } from './toons/Critter';
+import { Guide } from './toons/Toons';
+import type { Species } from './toons/cast';
 
 /** Sets the gap of a `.stack` without a one-off class. */
 export const gap = (value: string) => ({ '--gap': value }) as CSSProperties;
@@ -89,10 +92,21 @@ export function Figures({ metrics, outcome, against, recurring }: FiguresProps) 
   );
 }
 
-export function PrivateBanner({ name, solo }: { name: string; solo: boolean }) {
+export function PrivateBanner({
+  name,
+  solo,
+  species,
+}: {
+  name: string;
+  solo: boolean;
+  species: Species;
+}) {
   return (
     <div className="private-banner" role="status">
-      <strong>Private · {name}</strong>
+      <span className="private-who">
+        <Critter species={species} size={40} />
+        <strong>Private · {name}</strong>
+      </span>
       <span className="small">
         {solo
           ? 'Your limits stay on this device and are never shown to the other side.'
@@ -104,16 +118,25 @@ export function PrivateBanner({ name, solo }: { name: string; solo: boolean }) {
 
 interface GateProps {
   name: string;
+  species: Species;
   purpose: string;
   onReveal: () => void;
 }
 
 /** Shown between turns on a shared device so nobody sees the previous person's screen. */
-export function PrivacyGate({ name, purpose, onReveal }: GateProps) {
+export function PrivacyGate({ name, species, purpose, onReveal }: GateProps) {
   return (
     <section className="sheet gate" aria-labelledby="gate-title">
-      <p className="eyebrow">Private step</p>
-      <h2 id="gate-title">Hand the device to {name}</h2>
+      <Guide mood="cover" size={84}>
+        No peeking. I’m not looking either.
+      </Guide>
+      <div className="gate-who">
+        <Critter species={species} mood="happy" size={68} />
+        <div className="stack" style={gap('0.35rem')}>
+          <p className="eyebrow">Private step</p>
+          <h2 id="gate-title">Hand the device to {name}</h2>
+        </div>
+      </div>
       <p>{purpose} Everyone else, please look away until the device is handed on.</p>
       <button type="button" className="btn btn-primary" onClick={onReveal}>
         I’m {name}. Show my screen

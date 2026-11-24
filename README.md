@@ -48,6 +48,18 @@ Two ways to play:
   hidden limits of its own, starts out choosy, accepts more as rounds go on, and will give up to
   12% on a numeric limit when nothing overlaps. It never moves on availability.
 
+## Characters
+
+An oxpecker mascot follows the session: it covers its eyes on every private handover, presents
+each round of proposals, and celebrates a deal. Each person in a scenario is drawn as one of the
+animals oxpeckers ride on (zebra, giraffe, rhino, hippo, buffalo). The animal depends only on the
+person's place in the scenario, never on their name, so swapping in real names changes nobody's
+character. On the private answers screen, a person's character reacts to each yes or no.
+
+All motion is switched off when the device asks for reduced motion, and "Hide the characters" in
+the footer removes them altogether for a more formal setting. That choice is remembered per
+device.
+
 ## What "private" means here
 
 - Limits, priorities and yes/no answers are held in memory for the session and are never written
@@ -102,15 +114,41 @@ npm test
 npm run build
 ```
 
-`npm run build` produces a single self-contained `dist/index.html`. Open it directly, put it on a
-USB stick, or host it anywhere static. It needs no server and works offline (fonts fall back to
-system ones without a connection).
+`npm run build` puts the whole app in one self-contained `dist/index.html`. Open it directly, put
+it on a USB stick, or host the `dist` folder anywhere static. It needs no server and works offline
+(fonts fall back to system ones without a connection). The few files beside it (manifest, icons,
+`sw.js`) only matter when it is hosted, where they make it installable.
 
 ### Deploying to GitHub Pages
 
 A workflow is included at `.github/workflows/pages.yml`. In the repository settings, set
 **Pages → Source** to **GitHub Actions**, then run the "Deploy to GitHub Pages" workflow from the
 Actions tab.
+
+## Install it as an app
+
+Once it is hosted over HTTPS, Oxpecker installs straight from the browser and then opens full
+screen and works offline:
+
+- **Android:** open the site in Chrome, then menu → "Add to Home screen" (or "Install app").
+- **iPhone and iPad:** open the site in Safari, then Share → "Add to Home Screen".
+
+### App stores
+
+This repository does not contain store packages, and a listing needs your own developer accounts.
+The usual routes from here:
+
+- **Google Play.** Needs a Google Play developer account (a one-time US$25 registration fee at the
+  time of writing). Package the hosted app as a Trusted Web Activity with PWABuilder or Bubblewrap
+  and upload the bundle it generates in Play Console. To hide the browser bar inside the app, the
+  site has to serve `/.well-known/assetlinks.json` from the root of its domain. For a GitHub Pages
+  project site that means a custom domain or the `<user>.github.io` repository.
+- **Apple App Store.** Needs Apple Developer Program membership (US$99 a year at the time of
+  writing) and a Mac with Xcode. Wrap the build with Capacitor and submit through App Store
+  Connect. Apple's review can reject apps that are only a wrapped website, so be ready for that.
+
+Both stores also ask for a listing, screenshots and a privacy policy. Check each store's current
+requirements before starting; they change.
 
 ## Project layout
 
@@ -119,7 +157,9 @@ src/engine/      Pure negotiation logic: enumeration, limits, ranking, near miss
 src/scenarios/   The eight scenarios and the helpers they share
 src/session/     The session state machine and the practice log
 src/ui/          React screens
-tests/           Vitest suites for the engine, every scenario and the session flow
+src/ui/toons/    The mascot, the animal cast and who plays whom
+public/          Icons, web app manifest and offline service worker
+tests/           Vitest suites for the engine, every scenario, the session flow and casting
 ```
 
 The engine and session modules have no dependency on React or the browser, which is what lets the

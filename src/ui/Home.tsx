@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import type { Category } from '../engine/types';
-import { categoryLabels, templates } from '../scenarios';
+import { buildScenario, categoryLabels, templates } from '../scenarios';
+import { Bird } from './toons/Bird';
+import { Critter } from './toons/Critter';
+import { castFor } from './toons/cast';
 
 const filters: { id: Category | 'all'; label: string }[] = [
   { id: 'all', label: 'All 8' },
@@ -9,6 +12,11 @@ const filters: { id: Category | 'all'; label: string }[] = [
   { id: 'wage', label: 'Wage talks' },
 ];
 
+/** The characters each scenario is played with, in the order its people appear. */
+const casts = Object.fromEntries(
+  templates.map((t) => [t.id, Object.values(castFor(buildScenario(t)))]),
+);
+
 export function Home({ onOpen }: { onOpen: (templateId: string) => void }) {
   const [filter, setFilter] = useState<Category | 'all'>('all');
   const shown = templates.filter((t) => filter === 'all' || t.category === filter);
@@ -16,13 +24,22 @@ export function Home({ onOpen }: { onOpen: (templateId: string) => void }) {
   return (
     <>
       <section className="hero">
-        <p className="eyebrow">Pay and scheduling simulator</p>
-        <h1>Work out the shift, the split or the raise.</h1>
-        <p className="lede">
-          Pick a situation. Each person sets private limits on pay and availability. Oxpecker only
-          proposes arrangements inside everyone’s limits, and shows each person what they would
-          earn and work under every option before anyone says yes.
-        </p>
+        <div className="hero-copy">
+          <p className="eyebrow">Pay and scheduling simulator</p>
+          <h1>Work out the shift, the split or the raise.</h1>
+          <p className="lede">
+            Pick a situation. Each person sets private limits on pay and availability. Oxpecker
+            only proposes arrangements inside everyone’s limits, and shows each person what they
+            would earn and work under every option before anyone says yes.
+          </p>
+        </div>
+        <div className="toon hero-art">
+          <p className="speech speech-down">Tell me your limits. I won’t tell a soul.</p>
+          <div className="perch">
+            <Bird mood="wave" size={112} />
+            <Critter species="buffalo" size={150} />
+          </div>
+        </div>
       </section>
 
       <ol className="steps" aria-label="How a session runs">
@@ -74,8 +91,15 @@ export function Home({ onOpen }: { onOpen: (templateId: string) => void }) {
               </span>
               <span className="card-title">{t.title}</span>
               <span className="card-summary">{t.summary}</span>
-              <span className="card-foot">
-                {t.setting} · {t.recurring ? 'ongoing' : 'one week'}
+              <span className="card-bottom">
+                <span className="card-foot">
+                  {t.setting} · {t.recurring ? 'ongoing' : 'one week'}
+                </span>
+                <span className="toon card-cast">
+                  {casts[t.id].map((species, index) => (
+                    <Critter key={species} species={species} size={34} delay={index * 0.9} />
+                  ))}
+                </span>
               </span>
             </button>
           ))}

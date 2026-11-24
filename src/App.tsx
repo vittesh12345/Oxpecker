@@ -16,6 +16,9 @@ import { Home } from './ui/Home';
 import { LogPage } from './ui/LogPage';
 import { SessionView } from './ui/SessionView';
 
+/** Remembers whether this device wants the cartoon characters shown. */
+const TOONS_KEY = 'oxpecker.characters';
+
 type View =
   | { name: 'home' }
   | { name: 'brief'; templateId: string }
@@ -29,6 +32,24 @@ export default function App() {
   const [session, setSession] = useState<SessionState | null>(null);
   const [log, setLog] = useState<LogEntry[]>(() => loadLog(store));
   const [leaving, setLeaving] = useState(false);
+  const [toons, setToons] = useState(() => {
+    try {
+      return store?.getItem(TOONS_KEY) !== 'off';
+    } catch {
+      return true;
+    }
+  });
+
+  const toggleToons = () => {
+    setToons((on) => {
+      try {
+        store?.setItem(TOONS_KEY, on ? 'off' : 'on');
+      } catch {
+        // The choice just won't be remembered.
+      }
+      return !on;
+    });
+  };
 
   const go = (next: View) => {
     setView(next);
@@ -67,7 +88,7 @@ export default function App() {
   };
 
   return (
-    <div className="shell">
+    <div className={toons ? 'shell' : 'shell no-toons'}>
       <header className="masthead">
         <button
           type="button"
@@ -160,8 +181,13 @@ export default function App() {
       </main>
 
       <footer className="colophon">
-        Oxpecker is a practice tool, not legal or financial advice. Pay figures are gross
-        estimates. Everything you enter stays in this browser.
+        <p>
+          Oxpecker is a practice tool, not legal or financial advice. Pay figures are gross
+          estimates. Everything you enter stays in this browser.
+        </p>
+        <button type="button" className="navlink" aria-pressed={!toons} onClick={toggleToons}>
+          {toons ? 'Hide the characters' : 'Show the characters'}
+        </button>
       </footer>
     </div>
   );
