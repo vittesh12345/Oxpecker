@@ -119,19 +119,20 @@ it on a USB stick, or host the `dist` folder anywhere static. It needs no server
 (fonts fall back to system ones without a connection). The few files beside it (manifest, icons,
 `sw.js`) only matter when it is hosted, where they make it installable.
 
-### Deploying to GitHub Pages
+### Live site
 
-A workflow is included at `.github/workflows/pages.yml`. In the repository settings, set
-**Pages → Source** to **GitHub Actions**, then run the "Deploy to GitHub Pages" workflow from the
-Actions tab.
+The app is published at **https://vittesh12345.github.io/Oxpecker/**.
+
+Every push to `main` runs `.github/workflows/pages.yml`, which tests and builds the app and pushes
+the result to the `gh-pages` branch. GitHub Pages serves that branch. Nothing else needs setting
+up; to publish by hand, run "Publish site" from the Actions tab.
 
 ## Install it as an app
 
-Once it is hosted over HTTPS, Oxpecker installs straight from the browser and then opens full
-screen and works offline:
+Oxpecker installs straight from the live site and then opens full screen and works offline:
 
-- **Android:** open the site in Chrome, then menu → "Add to Home screen" (or "Install app").
-- **iPhone and iPad:** open the site in Safari, then Share → "Add to Home Screen".
+- **Android:** open the live site in Chrome, then menu → "Add to Home screen" (or "Install app").
+- **iPhone and iPad:** open the live site in Safari, then Share → "Add to Home Screen".
 
 ### App stores
 
