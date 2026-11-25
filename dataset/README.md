@@ -58,8 +58,8 @@ Version 1.0.0. No real people, workplaces or negotiation sessions are included.
 ```python
 from datasets import load_dataset
 
-puzzles = load_dataset("<this-repo-id>", "puzzles")
-scenarios = load_dataset("<this-repo-id>", "scenarios")
+puzzles = load_dataset("EthanChen72/oxpecker-negotiation-scenarios", "puzzles")
+scenarios = load_dataset("EthanChen72/oxpecker-negotiation-scenarios", "scenarios")
 ```
 
 ### The scenarios

@@ -153,7 +153,10 @@ requirements before starting; they change.
 
 ## Dataset
 
-`dataset/` holds a Hugging Face dataset generated from the scenario engine: the eight scenarios,
+Published at **https://huggingface.co/datasets/EthanChen72/oxpecker-negotiation-scenarios**
+(CC BY 4.0).
+
+`dataset/` holds that Hugging Face dataset, generated from the scenario engine: the eight scenarios,
 every possible arrangement with each person's projected figures, and 400 reasoning puzzles with
 exact answers (which arrangements respect everyone's limits, which is most balanced, and which is
 closest when nothing fits). Its card, `dataset/README.md`, describes the fields and limitations.
@@ -164,7 +167,12 @@ Regenerate it after changing a scenario:
 npm run dataset
 ```
 
-The tests fail if the committed files and the generator disagree.
+The tests fail if the committed files and the generator disagree. To publish a new version, log
+in with a Hugging Face token that has write access and run:
+
+```bash
+python scripts/upload_dataset.py
+```
 
 ## Project layout
 
@@ -175,7 +183,7 @@ src/session/     The session state machine and the practice log
 src/ui/          React screens
 src/ui/toons/    The mascot, the animal cast and who plays whom
 src/dataset/     Dataset generator and dataset card
-scripts/         Command-line scripts (dataset export)
+scripts/         Dataset export and upload scripts
 dataset/         The generated Hugging Face dataset
 public/          Icons, web app manifest and offline service worker
 tests/           Vitest suites for the engine, every scenario, the session flow and casting

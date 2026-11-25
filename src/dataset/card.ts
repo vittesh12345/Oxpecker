@@ -4,6 +4,9 @@ import { DATASET_VERSION, PUZZLES_PER_SCENARIO, TEST_PER_SCENARIO, type Dataset,
 /** The license the dataset is published under. Change it before publishing if you prefer another. */
 export const DATASET_LICENSE = 'cc-by-4.0';
 
+/** Where the dataset is published on Hugging Face. */
+export const DATASET_REPO = 'EthanChen72/oxpecker-negotiation-scenarios';
+
 const count = (rows: Row[], test: (r: Row) => boolean) => rows.filter(test).length;
 
 /** The Hugging Face dataset card, with figures taken from the generated data. */
@@ -81,8 +84,8 @@ Version ${DATASET_VERSION}. No real people, workplaces or negotiation sessions a
 \`\`\`python
 from datasets import load_dataset
 
-puzzles = load_dataset("<this-repo-id>", "puzzles")
-scenarios = load_dataset("<this-repo-id>", "scenarios")
+puzzles = load_dataset("${DATASET_REPO}", "puzzles")
+scenarios = load_dataset("${DATASET_REPO}", "scenarios")
 \`\`\`
 
 ### The scenarios
