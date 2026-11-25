@@ -18,4 +18,6 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm test
+      - name: Grade the reference answers
+        run: python3 -m unittest discover training
       - run: npm run build

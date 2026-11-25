@@ -1,0 +1,9 @@
+# Versions the training scripts were checked against.
+# torch is left open so a GPU machine can keep the CUDA build it already has.
+torch>=2.6
+transformers==5.24.1
+trl==1.18.2
+peft==0.22.0
+datasets==5.2.0
+accelerate==1.16.0
+huggingface_hub>=1.0

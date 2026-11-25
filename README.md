@@ -174,6 +174,13 @@ in with a Hugging Face token that has write access and run:
 python scripts/upload_dataset.py
 ```
 
+## Training a model
+
+`training/` fine-tunes a small open model (Qwen2.5-1.5B-Instruct by default) on the dataset's
+puzzles with LoRA. It scores the model before and after on the held-out test puzzles and publishes
+it with a model card built from those scores. It needs an NVIDIA GPU; `training/README.md` covers
+running it on a rented GPU, your own machine, or Google Colab's free tier.
+
 ## Project layout
 
 ```
@@ -184,6 +191,7 @@ src/ui/          React screens
 src/ui/toons/    The mascot, the animal cast and who plays whom
 src/dataset/     Dataset generator and dataset card
 scripts/         Dataset export and upload scripts
+training/        Fine-tuning, evaluation and model publishing (Python)
 dataset/         The generated Hugging Face dataset
 public/          Icons, web app manifest and offline service worker
 tests/           Vitest suites for the engine, every scenario, the session flow and casting
