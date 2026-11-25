@@ -32,8 +32,10 @@ export function DebriefForm({ state, canSave, onSave, onSkip }: Props) {
         </p>
         <h2 id="debrief-title">How did that go?</h2>
         <p className="lede">
-          A quick note for the practice log. It records how the session went. It never records
-          anyone’s limits or answers.
+          A quick note for the practice log. It records how the session went, never anyone’s
+          limits or answers.
+          {state.research &&
+            ' Separately, research mode recorded the answers of the people who agreed, without names or limits.'}
         </p>
       </div>
 

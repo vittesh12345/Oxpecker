@@ -1,10 +1,13 @@
 import { useState } from 'react';
 import { categoryLabels } from '../scenarios';
 import { logStats, toCsv, type LogEntry } from '../session/log';
+import { researchStats, toJsonLines, toTranscripts, type DecisionRecord } from '../session/research';
 import { CopyButton, gap } from './bits';
 import { Guide } from './toons/Toons';
 
 interface Props {
+  research: DecisionRecord[];
+  onClearResearch: () => void;
   entries: LogEntry[];
   justSaved: boolean;
   onClear: () => void;
@@ -16,11 +19,11 @@ const canDownload = import.meta.env.VITE_EMBEDDED !== 'true';
 
 const dateTime = new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeStyle: 'short' });
 
-function downloadCsv(csv: string): void {
-  const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+function download(text: string, filename: string, type: string): void {
+  const url = URL.createObjectURL(new Blob([text], { type: `${type};charset=utf-8` }));
   const link = document.createElement('a');
   link.href = url;
-  link.download = 'oxpecker-practice-log.csv';
+  link.download = filename;
   document.body.append(link);
   link.click();
   link.remove();
@@ -28,7 +31,7 @@ function downloadCsv(csv: string): void {
 }
 
 /** Every logged session on this device, with a summary and a CSV export. */
-export function LogPage({ entries, justSaved, onClear, onHome }: Props) {
+export function LogPage({ research, onClearResearch, entries, justSaved, onClear, onHome }: Props) {
   const [confirming, setConfirming] = useState(false);
   const stats = logStats(entries);
   const csv = toCsv(entries);
@@ -41,7 +44,8 @@ export function LogPage({ entries, justSaved, onClear, onHome }: Props) {
         <h1>Practice log</h1>
         <p className="lede">
           One line per finished session: which scenario, how it ended, how many rounds it took and
-          how fair it felt. Limits and answers are never recorded.
+          how fair it felt. Limits and answers are never recorded here. Research mode, below,
+          records answers only for people who agree.
         </p>
       </div>
 
@@ -118,7 +122,7 @@ export function LogPage({ entries, justSaved, onClear, onHome }: Props) {
 
           <div className="row">
             {canDownload && (
-              <button type="button" className="btn" onClick={() => downloadCsv(csv)}>
+              <button type="button" className="btn" onClick={() => download(csv, 'oxpecker-practice-log.csv', 'text/csv')}>
                 Download CSV
               </button>
             )}
@@ -148,6 +152,90 @@ export function LogPage({ entries, justSaved, onClear, onHome }: Props) {
           </div>
         </>
       )}
+      <ResearchPanel records={research} onClear={onClearResearch} />
     </>
+  );
+}
+
+/** Answers recorded in research mode, with exports for training and analysis. */
+function ResearchPanel({ records, onClear }: { records: DecisionRecord[]; onClear: () => void }) {
+  const [confirming, setConfirming] = useState(false);
+  const stats = researchStats(records);
+  const decisions = toJsonLines(records);
+  const transcripts = toJsonLines(toTranscripts(records));
+
+  return (
+    <section className="sheet stack" aria-labelledby="research-title">
+      <div className="stack" style={gap('0.4rem')}>
+        <p className="eyebrow">Research mode</p>
+        <h2 id="research-title">Recorded answers</h2>
+        <p className="muted">
+          Turn on “Record answers for research” when starting a session. Each person is asked in
+          private first. For those who agree, every yes or no is saved with the figures they saw,
+          with names replaced and limits left out.
+        </p>
+      </div>
+      {records.length === 0 ? (
+        <p>No answers recorded on this device yet.</p>
+      ) : (
+        <>
+          <p className="num">
+            {stats.decisions} answers · {stats.participants}{' '}
+            {stats.participants === 1 ? 'participant' : 'participants'} · {stats.sessions}{' '}
+            {stats.sessions === 1 ? 'session' : 'sessions'} · {stats.accepted} yes
+          </p>
+          <div className="row">
+            {canDownload && (
+              <>
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={() => download(decisions, 'oxpecker-decisions.jsonl', 'application/jsonl')}
+                >
+                  Download answers (JSONL)
+                </button>
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={() => download(transcripts, 'oxpecker-transcripts.jsonl', 'application/jsonl')}
+                >
+                  Download transcripts (Psych-101 format)
+                </button>
+              </>
+            )}
+            <CopyButton id="research-jsonl" label="Copy answers" text={decisions} />
+            <CopyButton id="research-transcripts" label="Copy transcripts" text={transcripts} />
+          </div>
+          <div className="row">
+            {confirming ? (
+              <>
+                <span>Delete all {stats.decisions} recorded answers from this device?</span>
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={() => {
+                    onClear();
+                    setConfirming(false);
+                  }}
+                >
+                  Yes, delete them
+                </button>
+                <button type="button" className="btn btn-quiet" onClick={() => setConfirming(false)}>
+                  Keep them
+                </button>
+              </>
+            ) : (
+              <button type="button" className="btn btn-quiet" onClick={() => setConfirming(true)}>
+                Delete recorded answers
+              </button>
+            )}
+          </div>
+          <p className="muted small">
+            If you share data from real people beyond your own practice, check whether your school or
+            workplace needs ethics approval first.
+          </p>
+        </>
+      )}
+    </section>
   );
 }

@@ -11,6 +11,7 @@ export interface StartRequest {
   mode: Mode;
   soloRole?: string;
   customised: boolean;
+  research: boolean;
 }
 
 interface Props {
@@ -36,6 +37,7 @@ export function Brief({ template, onBack, onStart }: Props) {
   );
   const [mode, setMode] = useState<Mode>('together');
   const [soloRole, setSoloRole] = useState('');
+  const [research, setResearch] = useState(false);
 
   const invalid = template.facts.filter((f) => parseFact(f, drafts[f.id]) === null).map((f) => f.id);
   const facts: Facts = useMemo(() => {
@@ -175,11 +177,27 @@ export function Brief({ template, onBack, onStart }: Props) {
             </fieldset>
           )}
 
+          <label className="option">
+            <input
+              type="checkbox"
+              id="research-mode"
+              checked={research}
+              onChange={(event) => setResearch(event.target.checked)}
+            />
+            <span>
+              <strong>Record answers for research.</strong>{' '}
+              <span className="muted">
+                Each person is asked first, in private. Records what they were shown and their
+                yes or no, never names or limits.
+              </span>
+            </span>
+          </label>
+
           <button
             type="button"
             className="btn btn-primary"
             onClick={() =>
-              onStart({ scenario, mode, soloRole: mode === 'solo' ? role : undefined, customised })
+              onStart({ scenario, mode, soloRole: mode === 'solo' ? role : undefined, customised, research })
             }
           >
             Start the session

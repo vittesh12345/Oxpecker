@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { partyOf } from '../engine/engine';
+import { decisionsFrom, type Consent, type DecisionRecord } from '../session/research';
 import { currentParty, type Action, type SessionState } from '../session/session';
+import { ConsentStep } from './Consent';
 import { LimitsStep } from './Limits';
 import { ResultStep } from './Result';
 import { ReviewStep } from './Review';
@@ -12,6 +14,8 @@ interface Props {
   state: SessionState;
   dispatch: (action: Action) => void;
   onFinish: () => void;
+  /** Receives research records, only in research mode and only for people who agreed. */
+  onRecord: (records: DecisionRecord[]) => void;
 }
 
 const STAGES: { phase: SessionState['phase']; label: string }[] = [
@@ -22,7 +26,7 @@ const STAGES: { phase: SessionState['phase']; label: string }[] = [
 ];
 
 /** Runs one session: private turns behind a cover screen, shared screens in the open. */
-export function SessionView({ state, dispatch, onFinish }: Props) {
+export function SessionView({ state, dispatch, onFinish, onRecord }: Props) {
   const { scenario } = state;
   const partyId = currentParty(state);
   const party = partyId ? partyOf(scenario, partyId) : null;
@@ -33,6 +37,7 @@ export function SessionView({ state, dispatch, onFinish }: Props) {
   // with every turn, so the cover screen comes back for the next person.
   const turnKey = `${state.phase}:${state.round}:${state.turn}:${state.revision ? 'revisit' : 'first'}`;
   const [opened, setOpened] = useState<string | null>(null);
+  const [consent, setConsent] = useState<Record<string, Consent>>({});
   const covered = !solo && party !== null && opened !== turnKey;
 
   usePrivateBackdrop(party !== null);
@@ -59,6 +64,16 @@ export function SessionView({ state, dispatch, onFinish }: Props) {
         onReveal={() => setOpened(turnKey)}
       />
     );
+  } else if (party && state.research && !consent[party.id]) {
+    body = (
+      <>
+        <PrivateBanner name={party.name} solo={solo} species={cast[party.id]} />
+        <ConsentStep
+          name={party.name}
+          onAnswer={(answer) => setConsent((c) => ({ ...c, [party.id]: answer }))}
+        />
+      </>
+    );
   } else if (party && state.phase === 'limits') {
     body = (
       <>
@@ -81,9 +96,13 @@ export function SessionView({ state, dispatch, onFinish }: Props) {
           key={turnKey}
           state={state}
           party={party}
-          onSubmit={(replies, tighten) =>
-            dispatch({ type: 'submit-review', partyId: party.id, replies, tighten })
-          }
+          onSubmit={(replies, tighten, seconds) => {
+            const agreed = consent[party.id];
+            if (state.research && agreed?.agreed) {
+              onRecord(decisionsFrom(state, party.id, replies, seconds, agreed));
+            }
+            dispatch({ type: 'submit-review', partyId: party.id, replies, tighten });
+          }}
         />
       </>
     );

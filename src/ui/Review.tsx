@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { baselineOf, tradeoffs } from '../engine/engine';
 import type { Party } from '../engine/types';
 import type { Proposal, Reply, SessionState, Tightening } from '../session/session';
@@ -9,7 +9,7 @@ import { castFor } from './toons/cast';
 interface Props {
   state: SessionState;
   party: Party;
-  onSubmit: (replies: Record<string, Reply>, tighten: Tightening[]) => void;
+  onSubmit: (replies: Record<string, Reply>, tighten: Tightening[], seconds: number) => void;
 }
 
 interface Reason {
@@ -49,6 +49,7 @@ export function ReviewStep({ state, party, onSubmit }: Props) {
   const today = baselineOf(scenario).outcomes[party.id];
   const species = castFor(scenario)[party.id];
   const [replies, setReplies] = useState<Record<string, Reply>>({});
+  const openedAt = useRef(Date.now());
   const [picked, setPicked] = useState<Record<string, string[]>>({});
 
   const slotLabel = (id: string) => scenario.slots.find((s) => s.id === id)?.label ?? id;
@@ -63,7 +64,7 @@ export function ReviewStep({ state, party, onSubmit }: Props) {
         if (chosen.includes(reason.id)) tighten.push(reason.tightening);
       }
     }
-    onSubmit(replies, tighten);
+    onSubmit(replies, tighten, (Date.now() - openedAt.current) / 1000);
   };
 
   return (

@@ -69,6 +69,12 @@ device.
 - When no arrangement fits everyone, each person is told privately whether one of *their own*
   limits is what the closest arrangement misses, and by how much. Nobody is shown anyone else's.
 - When a round produces no match, who declined what is not shown.
+- **Research mode** (off unless switched on when starting a session) asks each person privately
+  whether their answers may be recorded. For people who agree, it stores each proposal they were
+  shown, the figures it meant for them, their yes or no, their stated priority and how long they
+  took, under an anonymous code with every name replaced by "Person 1", "Person 2" and so on.
+  Limits are never stored. The records stay in the browser until exported from the Practice log
+  page, as JSONL or as Psych-101-style transcripts (choices marked `<<yes>>` / `<<no>>`).
 
 One thing the tool cannot hide: a proposal that appears on screen is, by construction, inside
 everyone's limits. That is the point of it, but it does tell the room something.

@@ -9,6 +9,7 @@ import {
   type Debrief,
   type LogEntry,
 } from './session/log';
+import { clearResearch, loadResearch, saveResearch, type DecisionRecord } from './session/research';
 import { reduce, startSession, type Action, type SessionState } from './session/session';
 import { Brief, type StartRequest } from './ui/Brief';
 import { DebriefForm } from './ui/Debrief';
@@ -31,6 +32,7 @@ export default function App() {
   const [view, setView] = useState<View>({ name: 'home' });
   const [session, setSession] = useState<SessionState | null>(null);
   const [log, setLog] = useState<LogEntry[]>(() => loadLog(store));
+  const [research, setResearch] = useState<DecisionRecord[]>(() => loadResearch(store));
   const [leaving, setLeaving] = useState(false);
   const [toons, setToons] = useState(() => {
     try {
@@ -67,6 +69,7 @@ export default function App() {
         mode: request.mode,
         soloRole: request.soloRole,
         customised: request.customised,
+        research: request.research,
         seed: Date.now() % 2147483647,
       }),
     );
@@ -155,7 +158,18 @@ export default function App() {
         )}
 
         {view.name === 'session' && session && (
-          <SessionView state={session} dispatch={dispatch} onFinish={() => go({ name: 'debrief' })} />
+          <SessionView
+            state={session}
+            dispatch={dispatch}
+            onFinish={() => go({ name: 'debrief' })}
+            onRecord={(records) =>
+              setResearch((all) => {
+                const next = [...all, ...records];
+                saveResearch(store, next);
+                return next;
+              })
+            }
+          />
         )}
 
         {view.name === 'debrief' && session && (
@@ -169,6 +183,11 @@ export default function App() {
 
         {view.name === 'log' && (
           <LogPage
+            research={research}
+            onClearResearch={() => {
+              clearResearch(store);
+              setResearch([]);
+            }}
             entries={log}
             justSaved={view.justSaved}
             onHome={() => go({ name: 'home' })}

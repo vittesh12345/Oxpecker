@@ -61,6 +61,10 @@ export interface Revision {
 export type Tightening = { limitId: string; key: string } | { limitId: string; slot: string };
 
 export interface SessionState {
+  /** Random id, used only to group research records from one session. */
+  id: string;
+  /** Opt-in research mode: answers are recorded for people who agree. */
+  research: boolean;
   templateId: string;
   scenario: Scenario;
   customised: boolean;
@@ -101,6 +105,8 @@ export interface StartOptions {
   seed?: number;
   now?: number;
   customised?: boolean;
+  research?: boolean;
+  id?: string;
 }
 
 export function startSession(options: StartOptions): SessionState {
@@ -127,6 +133,8 @@ export function startSession(options: StartOptions): SessionState {
   return {
     templateId: options.templateId,
     scenario,
+    id: options.id ?? `s-${(options.now ?? Date.now()).toString(36)}-${Math.floor(rng() * 1e9).toString(36)}`,
+    research: options.research ?? false,
     customised: options.customised ?? false,
     mode,
     humans,
