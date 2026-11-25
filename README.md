@@ -187,6 +187,10 @@ puzzles with LoRA. It scores the model before and after on the held-out test puz
 it with a model card built from those scores. It needs an NVIDIA GPU; `training/README.md` covers
 running it on a rented GPU, your own machine, or Google Colab's free tier.
 
+`training/human/` goes further: it trains a model to predict what **people** actually choose,
+Centaur-style, on Psych-101 (real choices from 160 psychology experiments), then tests it on the
+yes/no answers collected by Oxpecker's research mode. See `training/human/README.md`.
+
 ## Project layout
 
 ```
@@ -198,6 +202,7 @@ src/ui/toons/    The mascot, the animal cast and who plays whom
 src/dataset/     Dataset generator and dataset card
 scripts/         Dataset export and upload scripts
 training/        Fine-tuning, evaluation and model publishing (Python)
+training/human/  Human-choice model: Psych-101 training, tested on Oxpecker decisions
 dataset/         The generated Hugging Face dataset
 public/          Icons, web app manifest and offline service worker
 tests/           Vitest suites for the engine, every scenario, the session flow and casting

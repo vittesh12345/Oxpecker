@@ -20,4 +20,6 @@ jobs:
       - run: npm test
       - name: Grade the reference answers
         run: python3 -m unittest discover training
+      - name: Check human-choice masking
+        run: python3 -m unittest discover training/human
       - run: npm run build
