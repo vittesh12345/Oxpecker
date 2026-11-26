@@ -1,6 +1,6 @@
 {
-  "name": "Oxpecker",
-  "short_name": "Oxpecker",
+  "name": "PaySim",
+  "short_name": "PaySim",
   "description": "Work out shift trades, tip splits and wage talks with private limits and clear numbers.",
   "start_url": "./",
   "scope": "./",

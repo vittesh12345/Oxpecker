@@ -21,7 +21,7 @@ function agreementText(state: SessionState, letter: string, choices: Record<stri
     `Proposal ${letter}`,
     ...termsText(scenario, choices).map((line) => `- ${line}`),
     '',
-    'Each person accepted these terms privately. Worked out with Oxpecker.',
+    'Each person accepted these terms privately. Worked out with PaySim.',
   ].join('\n');
 }
 

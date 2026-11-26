@@ -1,7 +1,7 @@
 """Measures how well a model predicts people's actual choices.
 
     python training/human/evaluate.py --psych101 runs/human/data/heldout.jsonl \\
-        --oxpecker oxpecker-transcripts.jsonl --output runs/human/eval-base.json
+        --oxpecker paysim-transcripts.jsonl --output runs/human/eval-base.json
 
     python training/human/evaluate.py --adapter runs/human/qwen-0.5b/adapter ... --output runs/human/eval-tuned.json
 

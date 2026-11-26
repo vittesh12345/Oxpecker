@@ -96,10 +96,10 @@ export default function App() {
         <button
           type="button"
           className="wordmark"
-          aria-label="Oxpecker, home"
+          aria-label="PaySim, home"
           onClick={() => (inSession ? setLeaving(true) : go({ name: 'home' }))}
         >
-          Oxpecker
+          PaySim
         </button>
 
         {inSession ? (
@@ -201,7 +201,7 @@ export default function App() {
 
       <footer className="colophon">
         <p>
-          Oxpecker is a practice tool, not legal or financial advice. Pay figures are gross
+          PaySim is a practice tool, not legal or financial advice. Pay figures are gross
           estimates. Everything you enter stays in this browser.
         </p>
         <button type="button" className="navlink" aria-pressed={!toons} onClick={toggleToons}>

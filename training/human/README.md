@@ -38,7 +38,7 @@ python training/human/prepare.py --output runs/human/data
 ```
 
 ```bash
-python training/human/evaluate.py --psych101 runs/human/data/heldout.jsonl --oxpecker oxpecker-transcripts.jsonl --output runs/human/eval-base.json
+python training/human/evaluate.py --psych101 runs/human/data/heldout.jsonl --oxpecker paysim-transcripts.jsonl --output runs/human/eval-base.json
 ```
 
 ```bash
@@ -46,14 +46,14 @@ python training/human/train.py --data runs/human/data/train.jsonl --output runs/
 ```
 
 ```bash
-python training/human/evaluate.py --adapter runs/human/adapter --psych101 runs/human/data/heldout.jsonl --oxpecker oxpecker-transcripts.jsonl --output runs/human/eval-tuned.json
+python training/human/evaluate.py --adapter runs/human/adapter --psych101 runs/human/data/heldout.jsonl --oxpecker paysim-transcripts.jsonl --output runs/human/eval-tuned.json
 ```
 
 ```bash
 python training/human/publish.py --run runs/human --repo <your-hf-name>/human-choice-qwen2.5-0.5b-lora
 ```
 
-`oxpecker-transcripts.jsonl` is the file from **Practice log → Recorded answers → Download
+`paysim-transcripts.jsonl` is the file from **Practice log → Recorded answers → Download
 transcripts** in the app. Leave out `--oxpecker` until you have some.
 
 ## Using Oxpecker data for training

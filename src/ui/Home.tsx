@@ -28,7 +28,7 @@ export function Home({ onOpen }: { onOpen: (templateId: string) => void }) {
           <p className="eyebrow">Pay and scheduling simulator</p>
           <h1>Work out the shift, the split or the raise.</h1>
           <p className="lede">
-            Pick a situation. Each person sets private limits on pay and availability. Oxpecker
+            Pick a situation. Each person sets private limits on pay and availability. PaySim
             only proposes arrangements inside everyone’s limits, and shows each person what they
             would earn and work under every option before anyone says yes.
           </p>

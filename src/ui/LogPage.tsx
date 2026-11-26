@@ -122,7 +122,7 @@ export function LogPage({ research, onClearResearch, entries, justSaved, onClear
 
           <div className="row">
             {canDownload && (
-              <button type="button" className="btn" onClick={() => download(csv, 'oxpecker-practice-log.csv', 'text/csv')}>
+              <button type="button" className="btn" onClick={() => download(csv, 'paysim-practice-log.csv', 'text/csv')}>
                 Download CSV
               </button>
             )}
@@ -190,14 +190,14 @@ function ResearchPanel({ records, onClear }: { records: DecisionRecord[]; onClea
                 <button
                   type="button"
                   className="btn"
-                  onClick={() => download(decisions, 'oxpecker-decisions.jsonl', 'application/jsonl')}
+                  onClick={() => download(decisions, 'paysim-decisions.jsonl', 'application/jsonl')}
                 >
                   Download answers (JSONL)
                 </button>
                 <button
                   type="button"
                   className="btn"
-                  onClick={() => download(transcripts, 'oxpecker-transcripts.jsonl', 'application/jsonl')}
+                  onClick={() => download(transcripts, 'paysim-transcripts.jsonl', 'application/jsonl')}
                 >
                   Download transcripts (Psych-101 format)
                 </button>
