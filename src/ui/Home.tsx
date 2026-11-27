@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { Category } from '../engine/types';
 import { buildScenario, categoryLabels, templates } from '../scenarios';
+import { gap } from './bits';
 import { Bird } from './toons/Bird';
 import { Critter } from './toons/Critter';
 import { castFor } from './toons/cast';
@@ -108,6 +109,34 @@ export function Home({ onOpen }: { onOpen: (templateId: string) => void }) {
           Every scenario can be rewritten with your own names, wages and hours, so the same steps
           work for a real disagreement.
         </p>
+      </section>
+
+      <section className="sheet model-note" aria-labelledby="model-title">
+        <div className="stack" style={gap('0.6rem')}>
+          <p className="eyebrow">Behind the research</p>
+          <h2 id="model-title">A model of human choice</h2>
+          <p>
+            I trained a small language model to predict what people actually choose, using
+            Psych-101: real choices from 160 psychology experiments. PaySim’s research mode records
+            workplace decisions in the same format, so the model can be tested on pay and
+            scheduling choices, not just lab tasks.
+          </p>
+          <p className="model-stat">
+            On 139 people it had never seen, its average surprise at each of their choices fell
+            from <span className="num">0.99</span> to <span className="num">0.84</span>
+            <span className="muted small"> (negative log-likelihood per choice; lower is better)</span>
+          </p>
+          <div className="row">
+            <a
+              className="btn"
+              href="https://huggingface.co/EthanChen72/human-choice-qwen2.5-0.5b-lora"
+              target="_blank"
+              rel="noreferrer"
+            >
+              See the model on Hugging Face
+            </a>
+          </div>
+        </div>
       </section>
     </>
   );

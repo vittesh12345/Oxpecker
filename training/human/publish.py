@@ -11,6 +11,10 @@ import argparse
 import json
 from pathlib import Path
 
+PROJECT = "PaySim"
+PROJECT_SITE = "https://ethanchen71.github.io/PaySimulationTool/"
+CODE = "https://github.com/vittesh12345/Oxpecker/tree/main/training/human"
+
 
 def card(repo: str, training: dict, base: dict, tuned: dict) -> str:
     model = training["base_model"]
@@ -29,10 +33,10 @@ choices by {t['transcripts']} participants who were never trained on.
 """)
     if "oxpecker" in tuned and "oxpecker" in base and tuned["oxpecker"].get("answers"):
         b, t = base["oxpecker"], tuned["oxpecker"]
-        sections.append(f"""### Oxpecker workplace decisions (never trained on)
+        sections.append(f"""### {PROJECT} workplace decisions (never trained on)
 
 {t['answers']} real yes/no answers to pay and scheduling proposals, recorded with consent in
-[Oxpecker](https://github.com/vittesh12345/Oxpecker)'s research mode. Accuracy is how often the
+[{PROJECT}]({PROJECT_SITE})'s research mode. Accuracy is how often the
 model's more likely answer matched the person's.
 
 | Model | Accuracy | Log loss |
@@ -44,7 +48,13 @@ model's more likely answer matched the person's.
     extra = (
         f"plus {len(training['extra_files'])} extra transcript file(s)"
         if training.get("extra_files")
-        else "with no Oxpecker data in training"
+        else f"with no {PROJECT} data in training"
+    )
+    tested_on_project = "oxpecker" in tuned and tuned["oxpecker"].get("answers")
+    real_world = (
+        f"which is why the {PROJECT} results above are reported separately."
+        if tested_on_project
+        else f"It has not yet been tested on real workplace decisions from {PROJECT}."
     )
     return f"""---
 base_model: {model}
@@ -78,15 +88,21 @@ choice a person makes next. Training covers only the people's choices, not the e
 - LoRA rank {training['lora_rank']}, all linear layers; {training['epochs']} epoch(s); learning rate {training['learning_rate']}; effective batch size {training['effective_batch_size']}; up to {training['max_length']} tokens per transcript (longer ones cut at the end)
 - {training['steps']} optimizer steps, final training loss {training['final_train_loss']}, {training['minutes']} minutes on {training['device']}
 
-Code: the `training/human/` folder of [Oxpecker](https://github.com/vittesh12345/Oxpecker).
+## Used in
+
+[{PROJECT}]({PROJECT_SITE}), a pay and scheduling simulator for shift trades, tip splits and wage
+talks. {PROJECT}'s opt-in research mode records people's yes/no answers to workplace proposals in
+the same transcript format as Psych-101, so this model can be tested on everyday decisions as well
+as lab tasks.
+
+Training and evaluation code: [`training/human/`]({CODE}).
 
 ## Limitations
 
 - **Small and partial.** A sub-billion-parameter model trained on a sample of Psych-101. Centaur
   itself is a 70B model trained on all of it; expect this one to be far weaker.
 - **Lab tasks, not life.** Psych-101 comes from experiments, mostly with online participants. Good
-  scores there do not show the model predicts real-world decisions well, which is why the
-  Oxpecker results above are reported separately.
+  scores there do not show the model predicts real-world decisions well. {real_world}
 - **Not for decisions about people.** It models average tendencies in experiments. It should not
   be used to judge, rank or make decisions about any real person.
 

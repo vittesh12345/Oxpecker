@@ -187,6 +187,10 @@ puzzles with LoRA. It scores the model before and after on the held-out test puz
 it with a model card built from those scores. It needs an NVIDIA GPU; `training/README.md` covers
 running it on a rented GPU, your own machine, or Google Colab's free tier.
 
+The trained human-choice model is published at
+**https://huggingface.co/EthanChen72/human-choice-qwen2.5-0.5b-lora**. On 139 held-out Psych-101
+participants it lowered the average negative log-likelihood per choice from 0.99 to 0.84.
+
 `training/human/` goes further: it trains a model to predict what **people** actually choose,
 Centaur-style, on Psych-101 (real choices from 160 psychology experiments), then tests it on the
 yes/no answers collected by Oxpecker's research mode. See `training/human/README.md`.

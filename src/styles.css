@@ -1050,3 +1050,16 @@ td.notes {
   margin: 0;
   padding-left: 1.2rem;
 }
+
+.model-note {
+  max-width: 46rem;
+}
+
+.model-stat .num {
+  font-weight: 600;
+}
+
+a.btn {
+  display: inline-block;
+  text-decoration: none;
+}
