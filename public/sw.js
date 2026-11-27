@@ -1,6 +1,6 @@
 // Offline support for the hosted app. The whole tool is one HTML file, so the
 // cache only needs that file and the install icons.
-const CACHE = 'oxpecker-v1';
+const CACHE = 'paysim-v2';
 const SHELL = [
   './',
   './index.html',
@@ -32,10 +32,17 @@ self.addEventListener('fetch', (event) => {
   const request = event.request;
   if (request.method !== 'GET' || new URL(request.url).origin !== self.location.origin) return;
 
-  // Network first, so a new release shows up straight away; the cached copy
-  // is only used when there is no connection.
+  // Network first; the cached copy is only used when there is no connection.
+  // Pages also skip the browser's HTTP cache (GitHub Pages allows 10 minutes),
+  // so a new release shows on a normal reload. A navigation request can't be
+  // re-issued with options, hence fetching its URL.
+  const fresh =
+    request.mode === 'navigate'
+      ? fetch(request.url, { cache: 'no-cache', credentials: 'same-origin' })
+      : fetch(request);
+
   event.respondWith(
-    fetch(request)
+    fresh
       .then((response) => {
         if (response.ok) {
           const copy = response.clone();
